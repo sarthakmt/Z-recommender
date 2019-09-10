@@ -33,20 +33,20 @@ layout=[
                 dcc.Dropdown(
                     id='city-dp',
                     options=[{'label': i, 'value': i} for i in cities],
-                    value='Select City'
+                    placeholder='Select City'
                 )
             ],className = "four columns"),
 
             html.Div([
                 dcc.Dropdown(
                     id='region-dp',
-                    value='Select Region'
+                    placeholder='Select Region'
                 )
             ],className = "four columns"),
             html.Div([
                 dcc.Dropdown(
                     id='restaurants-dp',
-                    value='Select Restaurants'
+                    placeholder='Select Restaurants'
                 )
             ],className = "four columns")    
         ],className = "row"),

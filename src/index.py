@@ -14,7 +14,10 @@ tabs_styles = {
 tab_style = {
     'borderBottom': '1px solid #d6d6d6',
     'padding': '6px',
-    'fontWeight': 'bold'
+    'fontWeight': 'bold',
+    'text-align':'center',
+    'align-items': 'center',
+    'justify-content': 'center' 
 }
 
 tab_selected_style = {
@@ -40,7 +43,7 @@ app.layout = html.Div([
                     ],
                 ),
             ],
-            className="row header"
+            className="banner"
         ),
 
     # Tabs
