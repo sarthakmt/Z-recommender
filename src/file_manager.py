@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from nltk.tokenize import word_tokenize
@@ -131,3 +132,13 @@ data = filtered_data("Delhi NCR")
 # Cont Call
 # cont_qualified = cont_recommender(data,'Indirapuram','The Daily Bread')
 # print(cont_qualified)
+
+# @filtered_data(city,region)
+def get_cusine_counts(data):
+    vec = CountVectorizer(tokenizer=lambda x: [i.strip() for i in x.split(',')], lowercase=False)
+    counts = vec.fit_transform(data['CUSINE_CATEGORY']) # actual count, output will be a sparse matrix
+    computed_cat_count = dict(zip(vec.get_feature_names(), counts.sum(axis=0).tolist()[0]))
+    c_df = pd.DataFrame(list(computed_cat_count.items()), columns=['Cusine', 'Count'])
+    return c_df
+
+# print(get_cusine_counts(data).head(10))

@@ -17,11 +17,11 @@ def make_card(row,index):
         ], className = 'innerBox' )
     ], className='cardBox', id=str(index))
 
+
 # divs = []
 # for index, row in qualified.head(10).iterrows():
 #     print(index)
 #     divs.append(make_card(row,index))
-
 
 layout=[
     html.Div([
@@ -76,6 +76,8 @@ def update_table(city,region):
     qualified = simple_recommender(fil_data)
     cols = ["NAME","CUSINE_CATEGORY","RATING","VOTES","score"]
     qualified = qualified[cols]
+
+    # quali_table = df_to_table(qualified)
     # print(qualified.head())
     return html.Div([
             html.Div([
@@ -99,9 +101,12 @@ def update_table(city,region):
                     'layout': go.Layout(
                         title=f"Popularity of cusines")
                     }    
-                )],className="six columns")    
+                )],className="six columns"),
+
+                html.Div(id="top_open_opportunities", className="table")    
                 ],className="row")
-                
+
+
 @app.callback(
     Output('restaurants-dp', 'options'),
 	[Input('city-dp','value'),
