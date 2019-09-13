@@ -39,7 +39,7 @@ app.layout = html.Div([
                 html.Span(
                     className="app-title",
                     children=[
-                        dcc.Markdown("**Z-Recommender**"),
+                        html.H3("Z-Recommender",style={"text-align":"center"})
                     ],
                 ),
             ],
