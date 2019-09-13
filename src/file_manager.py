@@ -39,7 +39,7 @@ def weighted_rating(x, m, C):
 
 # Simple recommender
 def simple_recommender(fil_data):
-    cols = ["NAME","CUSINE_CATEGORY","REGION","RATING","VOTES"]
+    cols = ["NAME","CUSINE_CATEGORY","PRICE","REGION","RATING","VOTES"]
     fil_data = fil_data[cols]
     # print(fil_data.head())
     C = fil_data["RATING"].mean() # mean
@@ -114,7 +114,7 @@ def cont_recommender(fil_data,location,title):
     sim_scores = sim_scores[0:10]
     rest_indices = [i[0] for i in sim_scores] 
   
-    data_x =data_sample[['NAME','CUSINE_CATEGORY','RATING']].iloc[rest_indices]
+    data_x =data_sample[['NAME','CUSINE_CATEGORY',"PRICE",'RATING']].iloc[rest_indices]
     
     data_x['Cosine Similarity']=0
     for i,j in enumerate(sim_scores):
@@ -134,11 +134,11 @@ data = filtered_data("Delhi NCR")
 # print(cont_qualified)
 
 # @filtered_data(city,region)
-def get_cusine_counts(data):
+def get_cusine_counts(data,column,new_column):
     vec = CountVectorizer(tokenizer=lambda x: [i.strip() for i in x.split(',')], lowercase=False)
-    counts = vec.fit_transform(data['CUSINE_CATEGORY']) # actual count, output will be a sparse matrix
+    counts = vec.fit_transform(data[column]) # actual count, output will be a sparse matrix
     computed_cat_count = dict(zip(vec.get_feature_names(), counts.sum(axis=0).tolist()[0]))
-    c_df = pd.DataFrame(list(computed_cat_count.items()), columns=['Cusine', 'Count'])
+    c_df = pd.DataFrame(list(computed_cat_count.items()), columns=[new_column, 'Count'])
     return c_df
 
-# print(get_cusine_counts(data).head(10))
+# print(get_cusine_counts(data,"CUSINE TYPE","Cuisine Types").head(10))

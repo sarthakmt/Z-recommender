@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from file_manager import cities,initial_load,all_regions,simple_recommender,filtered_data,cont_recommender
 from app import app
+import pandas as pd
 
 def make_card(row,index):
     return html.Div([
@@ -54,7 +55,24 @@ layout=[
         html.Div(id= "recco", children = [
         ],className="row"),
         html.Div(id= "cont-recco", children = [
-        ],className="row")    
+            html.Div(id = "bar-plot",children=[
+
+            ],className="six columns"),
+            html.Div(id = "cont-recco-tab",children=[
+
+            ],className="six columns")
+        ],className="row"),
+        # html.Div([
+        #     html.Div([
+        #         dcc.Dropdown(
+        #             id='cusine-type-dp',
+        #             placeholder='Select Cusine type'
+        #         )
+        #     ]),
+        #     html.Div([
+
+        #     ])
+        # ])    
     ])
 ]
 
@@ -74,7 +92,7 @@ def update_table(city,region):
     fil_data = filtered_data(city,region)
     # Simple Call
     qualified = simple_recommender(fil_data)
-    cols = ["NAME","CUSINE_CATEGORY","RATING","VOTES","score"]
+    cols = ["NAME","CUSINE_CATEGORY","PRICE","RATING","VOTES","score"]
     qualified = qualified[cols]
 
     # quali_table = df_to_table(qualified)
@@ -117,17 +135,40 @@ def update_dp(city,region):
     return [{'label': i, 'value': i} for i in res_list]
 
 @app.callback(
-    Output('cont-recco', 'children'),
+    Output('bar-plot', 'children'),
+	[Input('city-dp','value'),
+    Input('region-dp','value')])
+def update_price_counts(city,region):
+    if region != None:
+        fil_data = filtered_data(city,region)
+    return html.Div([
+            dcc.Graph(
+                    id="scatter-graph",
+                    figure={
+                    'data' : [go.Bar(
+                        x=fil_data["PRICE"].value_counts().to_dense().keys(), 
+                        y=fil_data["PRICE"].value_counts(),
+                        # textinfo='label'
+                        )],
+                    'layout': go.Layout(
+                        title=f"Price Range Counts")
+                    }    
+                )])
+
+@app.callback(
+    Output('cont-recco-tab', 'children'),
 	[Input('city-dp','value'),
     Input('region-dp','value'),
     Input('restaurants-dp', 'value')])    
 def update_cont_rec(city,region,rest):
     fil_data = filtered_data(city,region)
     cont_qualified = cont_recommender(fil_data,region,rest)
-    return html.Div([
+    ranges = [0,250,500,750,1000,1250,1500,2000]
+    dummy = fil_data ["PRICE"].groupby(pd.cut(fil_data.PRICE, ranges)).count()
+    return  html.Div([
                 html.H6("Similar restaurants like "+rest),
                 dash_table.DataTable(
                     id='cont-rec-table',
                     columns=[{"name": i, "id": i} for i in cont_qualified.columns],
                     data=cont_qualified.head(10).to_dict('records'),
-                )],className="six columns")
+                )]),
