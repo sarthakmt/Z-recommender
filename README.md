@@ -1,6 +1,6 @@
 # Z-recommender
 
-This is a dashboard for restaurants' recommender.
+This is a dashboard for restaurants' recommender which recommends cusines, dishes and restaurants based on content-based filtering.
 
 Steps to start the dashboard:
   1. Clone the project.
